@@ -8,6 +8,7 @@ using TMPro;
 public class ScreenManager : MonoBehaviourPun
 {
     public GameObject endScreen;
+    public GameObject waitingScreen;
     
     public TextMeshProUGUI endText;
     public string levelToLoad;
@@ -62,5 +63,10 @@ public class ScreenManager : MonoBehaviourPun
     {
         PhotonNetwork.Disconnect();
         PhotonNetwork.LoadLevel(levelToLoad);
+    }
+
+    public void WaitingScreenState(bool state)
+    {
+        waitingScreen.SetActive(state);
     }
 }

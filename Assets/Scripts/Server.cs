@@ -16,6 +16,7 @@ public class Server : MonoBehaviourPun
     public CharacterSpawn spawns;
     private Dictionary<Player, Character> _dicModels = new Dictionary<Player, Character>();
 
+    private bool _enoughPlayers;
     public int PackagesPerSecond
     {
         get;
@@ -34,10 +35,8 @@ public class Server : MonoBehaviourPun
                 {
                     StartCoroutine(SearchSpawns());
                 }
-                else
-                {
-                    Debug.Log("spawn en el start");
-                }
+
+                StartCoroutine(CheckPlayers());
                 photonView.RPC("SetServer", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer, 1);
             }
         }
@@ -62,7 +61,7 @@ public class Server : MonoBehaviourPun
             Destroy(gameObject);
             return;
         }
-
+        
         instance = this;
         
         _server = serverPlayer;
@@ -96,12 +95,44 @@ public class Server : MonoBehaviourPun
         Character newCharacter = PhotonNetwork.Instantiate(characterPrefab.name, spawns.spawns[pos].position, spawns.spawns[pos].rotation).GetComponent<Character>();
         newCharacter.transform.Rotate(newCharacter.transform.up, 90.0f);
         newCharacter.SetInitialParameters(player);
-        _dicModels.Add(player, newCharacter);
+        _dicModels.Add(player, newCharacter); 
+        photonView.RPC("SetWaitingScreen", player, true);
 
+    }
+
+    IEnumerator CheckPlayers()
+    {
+        while (!_enoughPlayers)
+        {
+            _enoughPlayers = PhotonNetwork.PlayerList.Length >= 3;
+            yield return new WaitForSecondsRealtime(1); 
+        }
+
+        _enoughPlayers = true;
+        foreach (var p in PhotonNetwork.PlayerList)
+        {
+            photonView.RPC("SetWaitingScreen", p, false);
+        }
+        Debug.Log("enough players: " + _enoughPlayers);
+    }
+    [PunRPC]
+    void SetWaitingScreen(bool state)
+    {
+        if (!state)
+            _enoughPlayers = true;
+        var screens = FindObjectOfType<ScreenManager>();
+        
+        screens.WaitingScreenState(state);
     }
 
     public void RequestMove(Player player, Vector3 dir)
     {
+        if (!_enoughPlayers)
+        {
+            Debug.Log("no me muevo");
+            return;
+        }
+        Debug.Log("si me muevo");
         photonView.RPC("Move", _server, player, dir);
     }
 
@@ -116,6 +147,7 @@ public class Server : MonoBehaviourPun
     
     public void RequestJump(Player player)
     {
+        if (!_enoughPlayers) return;
         photonView.RPC("Jump", _server, player);
     }
 
@@ -130,6 +162,7 @@ public class Server : MonoBehaviourPun
 
     public void RequestShoot(Player player, Vector3 dir)
     {
+        if (!_enoughPlayers) return;
         photonView.RPC("Shoot", _server, player, dir);
     }
 
