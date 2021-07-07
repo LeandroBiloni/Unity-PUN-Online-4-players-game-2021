@@ -6,11 +6,13 @@ using Photon.Pun;
 
 public class CharacterControl: MonoBehaviourPun
 {
+    private Camera _cam;
     private void Start()
     {
+        //_cam = Camera.main;
         if (!photonView.IsMine) return;
         
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
 
         StartCoroutine(SendPackages());
     }
@@ -53,8 +55,24 @@ public class CharacterControl: MonoBehaviourPun
                 dir = -transform.right;
             }
             Server.instance.RequestMove(PhotonNetwork.LocalPlayer, dir);
+            
+            if (Input.GetMouseButtonDown(0))
+            {
+                Server.instance.RequestShoot(PhotonNetwork.LocalPlayer, MousePosition());
+            }
+            
+            if (Input.GetKeyDown(KeyCode.W) )
+            {
+                Server.instance.RequestJump(PhotonNetwork.LocalPlayer);
+            }
 
             yield return new WaitForSeconds(1 / Server.instance.PackagesPerSecond);
         }
+    }
+    
+    Vector3 MousePosition()
+    {
+        var cam = FindObjectOfType<Camera>();
+        return cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, (cam.transform.position - transform.position).magnitude));
     }
 }

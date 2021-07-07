@@ -107,15 +107,37 @@ public class Server : MonoBehaviourPun
     [PunRPC]
     void Move(Player player, Vector3 dir)
     {
-        Debug.Log("recibo move de: " + player.NickName);
-        Debug.Log("dir es: " + dir);
         if (_dicModels.ContainsKey(player))
         {
             _dicModels[player].Move(dir);
         }
-        else
+    }
+    
+    public void RequestJump(Player player)
+    {
+        photonView.RPC("Jump", _server, player);
+    }
+
+    [PunRPC]
+    void Jump(Player player)
+    {
+        if (_dicModels.ContainsKey(player))
         {
-            Debug.Log("sin player en el dic");
+            _dicModels[player].Jump();
+        }
+    }
+
+    public void RequestShoot(Player player, Vector3 dir)
+    {
+        photonView.RPC("Shoot", _server, player, dir);
+    }
+
+    [PunRPC]
+    void Shoot(Player player, Vector3 dir)
+    {
+        if (_dicModels.ContainsKey(player))
+        {
+            _dicModels[player].Shoot(dir);
         }
     }
 }

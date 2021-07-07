@@ -88,15 +88,10 @@ public class Character : MonoBehaviourPun, IPunObservable
 
     private void OnCollisionEnter(Collision other)
     {
-        // if (_myView == null)
-        // {
-        //     Debug.Log("sin view");
-        // }
-        // if (!_myView.IsMine) return;
-        // if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        // {
-        //     ResetRotation();
-        // }
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            ResetRotation();
+        }
     }
 
     Vector3 MousePosition()
@@ -115,8 +110,10 @@ public class Character : MonoBehaviourPun, IPunObservable
     }
 
     [PunRPC]
-    void Jump()
+    public void Jump()
     {
+        if (_jumping) return;
+        
         _jumping = true;
         _grounded = false;
         rb.constraints = RigidbodyConstraints.None;
@@ -124,9 +121,13 @@ public class Character : MonoBehaviourPun, IPunObservable
                           RigidbodyConstraints.FreezeRotationY;
         rb.AddForce(transform.up * jumpForce);
     }
-    
-    void Shoot(Vector3 mousePos)
+
+    public void Shoot(Vector3 mousePos)
     {
+        if (!_canShoot) return;
+        
+        _canShoot = false;
+        StartCoroutine(Cooldown());
         Vector3 closest = Vector3.zero;
         for (int i = 0; i < spawnPoints.Count; i++)
         {
@@ -135,13 +136,13 @@ public class Character : MonoBehaviourPun, IPunObservable
                 closest = spawnPoints[i].position;
                 continue;
             }
-
-            
-            if ( (mousePos- spawnPoints[i].position).magnitude <
+                
+            if ((mousePos - spawnPoints[i].position).magnitude <
                 (mousePos - closest).magnitude)
                 closest = spawnPoints[i].position;
 
         }
+
         var proj = PhotonNetwork.Instantiate("Projectile", closest, Quaternion.identity);
         var p = proj.GetComponent<Projectile>();
         var dir = (mousePos - transform.position);
