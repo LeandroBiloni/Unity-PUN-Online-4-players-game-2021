@@ -141,4 +141,16 @@ public class Server : MonoBehaviourPun
             _dicModels[player].Shoot(dir);
         }
     }
+
+    public void PlayerLose(Player player)
+    {
+        //CAMBIAR A PANTALLA DE DERROTA
+        PhotonNetwork.Destroy(_dicModels[player].gameObject);
+        _dicModels.Remove(player);
+
+        if (PhotonNetwork.PlayerList.Length <= 2)
+        {
+            //ACA HAGO EL WIN
+        }
+    }
 }

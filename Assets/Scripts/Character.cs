@@ -145,11 +145,10 @@ public class Character : MonoBehaviourPun, IPunObservable
 
         }
 
-        var proj = PhotonNetwork.Instantiate("Projectile", closest, Quaternion.identity);
-        var p = proj.GetComponent<Projectile>();
         var dir = (mousePos - transform.position);
         dir.z = 0;
-        p.SetDir(dir.normalized);
+        
+        PhotonNetwork.Instantiate("Projectile", closest, Quaternion.identity).GetComponent<Projectile>().SetOwner(this).SetDir(dir.normalized);
     }
 
     IEnumerator Cooldown()
@@ -173,9 +172,16 @@ public class Character : MonoBehaviourPun, IPunObservable
         if (_hp <= 0)
         {
             alive = false;
-            ActivateLoseScreen();
+            //ActivateLoseScreen();
             _myView.RPC("Die", RpcTarget.All);
+            Server.instance.PlayerLose(_owner);
+            photonView.RPC("DisconnectOwner", _owner);
         }
+    }
+
+    void DisconnectOwner()
+    {
+        PhotonNetwork.Disconnect();
     }
     
     [PunRPC]

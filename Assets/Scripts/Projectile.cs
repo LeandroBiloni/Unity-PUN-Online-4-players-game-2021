@@ -11,38 +11,47 @@ public class Projectile : MonoBehaviourPun
     private Vector3 _dir;
     public float force;
 
+    private Character _owner;
     private void Update()
     {
+        if (!photonView.IsMine) return;
+        
         transform.position += _dir * (speed * Time.deltaTime);
     }
 
     private void OnCollisionEnter(Collision other)
     {
         Debug.Log("hit something");
-        if (photonView.IsMine)
+        if (!photonView.IsMine) return;
+        
+        Debug.Log("view is mine");
+        var character = other.gameObject.GetComponent<Character>();
+        if (character != null && character != _owner)
         {
-            Debug.Log("view is mine");
-            var character = other.gameObject.GetComponent<Character>();
-            if (character != null)
-            {
-                Debug.Log("hit char");
-                var contactPoint = other.collider.ClosestPoint(transform.position);
-                var dirToPush = (contactPoint - transform.position).normalized;
-                character.Damage(damage);
-                character.Push(dirToPush, force, contactPoint);
-            }
-            GetComponent<PhotonView>().RPC("Die", RpcTarget.All);
+            Debug.Log("hit char");
+            var contactPoint = other.collider.ClosestPoint(transform.position);
+            var dirToPush = (contactPoint - transform.position).normalized;
+            character.Damage(damage);
+            character.Push(dirToPush, force, contactPoint);
         }
+        PhotonNetwork.Destroy(gameObject);
     }
 
-    [PunRPC]
-    void Die()
-    {
-        Destroy(gameObject);
-    }
+    // [PunRPC]
+    // void Die()
+    // {
+    //     Destroy(gameObject);
+    // }
 
-    public void SetDir(Vector3 dir)
+    public Projectile SetDir(Vector3 dir)
     {
         _dir = dir;
+        return this;
+    }
+
+    public Projectile SetOwner(Character owner)
+    {
+        _owner = owner;
+        return this;
     }
 }
