@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using UnityEditor;
 
@@ -14,7 +15,7 @@ public class Character : MonoBehaviourPun, IPunObservable
     public float maxHp;
     private float _hp;
     public Image hpBar;
-    private Rigidbody _rb;
+    public Rigidbody rb;
 
     public float jumpForce;
 
@@ -36,16 +37,15 @@ public class Character : MonoBehaviourPun, IPunObservable
     private Camera _cam;
 
     public TextMeshPro nameText;
+
+    private Player _owner;
     // Start is called before the first frame update
     void Start()
     {
         _myView = GetComponent<PhotonView>();
-        _rb = GetComponent<Rigidbody>();
-        
+
         if (!_myView.IsMine) return;
-        GetComponent<MeshRenderer>().material.color = Color.green;
         
-        _myView.RPC("RPCChangeColor", RpcTarget.OthersBuffered, 1f,0f,0f);
         _myView.RPC("SetPlayerName", RpcTarget.AllBuffered,PhotonNetwork.LocalPlayer.NickName);
         
         _cam = Camera.main;
@@ -57,50 +57,46 @@ public class Character : MonoBehaviourPun, IPunObservable
     // Update is called once per frame
     void Update()
     {
-        if (!_myView.IsMine) return;
-        
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (_canShoot)
-            {
-                _canShoot = false;
-                Shoot(MousePosition());
-                //_myView.RPC("Shoot", RpcTarget.AllBuffered, MousePosition());
-                StartCoroutine(Cooldown());
-            }
-        }
-        
-        if (_canMove)
-        {
-            
-            _horizontal = Input.GetAxis("Horizontal");
-            if (_horizontal != 0)
-            {
-                Move();
-                //_myView.RPC("Move", RpcTarget.AllBuffered);
-            }
-
-        }
-        
-        if (Input.GetKeyDown(KeyCode.W) && _jumping == false)
-        {
-            Jump();
-            //_myView.RPC("Jump", RpcTarget.AllBuffered);
-        }
+        // if (!_myView.IsMine) return;
+        //
+        // if (Input.GetMouseButtonDown(0))
+        // {
+        //     if (_canShoot)
+        //     {
+        //         _canShoot = false;
+        //         Shoot(MousePosition());
+        //         StartCoroutine(Cooldown());
+        //     }
+        // }
+        //
+        // if (_canMove)
+        // {
+        //     
+        //     // _horizontal = Input.GetAxis("Horizontal");
+        //     // if (_horizontal != 0)
+        //     // {
+        //     //     Move();
+        //     // }
+        //
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.W) && _jumping == false)
+        // {
+        //     Jump();
+        // }
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (_myView == null)
-        {
-            Debug.Log("sin view");
-        }
-        if (!_myView.IsMine) return;
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            //_myView.RPC("ResetRotation", RpcTarget.AllBuffered);
-            ResetRotation();
-        }
+        // if (_myView == null)
+        // {
+        //     Debug.Log("sin view");
+        // }
+        // if (!_myView.IsMine) return;
+        // if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        // {
+        //     ResetRotation();
+        // }
     }
 
     Vector3 MousePosition()
@@ -109,12 +105,13 @@ public class Character : MonoBehaviourPun, IPunObservable
     }
     
     [PunRPC]
-    void Move()
+    public void Move(Vector3 dir)
     {
-        Debug.Log("me muevo");
-        if (_horizontal > 0)
-            _rb.AddForce(transform.right * moveSpeed);
-        else _rb.AddForce(-transform.right * moveSpeed);
+        // if (_horizontal > 0)
+        //     _rb.AddForce(transform.right * moveSpeed);
+        // else _rb.AddForce(-transform.right * moveSpeed);
+        Debug.Log("me muevo en: " + dir);
+        rb.AddForce(dir * moveSpeed);
     }
 
     [PunRPC]
@@ -122,10 +119,10 @@ public class Character : MonoBehaviourPun, IPunObservable
     {
         _jumping = true;
         _grounded = false;
-        _rb.constraints = RigidbodyConstraints.None;
-        _rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX |
+        rb.constraints = RigidbodyConstraints.None;
+        rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX |
                           RigidbodyConstraints.FreezeRotationY;
-        _rb.AddForce(transform.up * jumpForce);
+        rb.AddForce(transform.up * jumpForce);
     }
     
     void Shoot(Vector3 mousePos)
@@ -161,7 +158,7 @@ public class Character : MonoBehaviourPun, IPunObservable
     
     public void Push(Vector3 dir, float force, Vector3 collisionPoint)
     {
-        _rb.AddForceAtPosition(dir * force, collisionPoint);
+        rb.AddForceAtPosition(dir * force, collisionPoint);
     }
     
     
@@ -181,14 +178,14 @@ public class Character : MonoBehaviourPun, IPunObservable
     [PunRPC]
     void ResetRotation()
     {
-        _rb.constraints = RigidbodyConstraints.None;
-        _rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX |
+        rb.constraints = RigidbodyConstraints.None;
+        rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX |
                           RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         _jumping = false;
         _grounded = true;
         transform.rotation = Quaternion.identity;
         if (_horizontal == 0)
-            _rb.velocity = Vector3.zero;
+            rb.velocity = Vector3.zero;
     }
 
     [PunRPC]
@@ -208,7 +205,6 @@ public class Character : MonoBehaviourPun, IPunObservable
     {
         Debug.Log("memo ri");
         Destroy(gameObject);
-        //PhotonNetwork.Disconnect();
     }
     
     void ActivateLoseScreen()
@@ -252,5 +248,18 @@ public class Character : MonoBehaviourPun, IPunObservable
     void UpdateName()
     {
         nameText.text = _playerName;
+    }
+    
+    public Character SetInitialParameters(Player localPlayer)
+    {
+        _owner = localPlayer;
+        photonView.RPC("SetLocalParams", _owner, maxHp);
+        return this;
+    }
+
+    [PunRPC]
+    void SetLocalParams(float life)
+    {
+        _hp = life;
     }
 }

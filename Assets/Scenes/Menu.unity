@@ -3310,6 +3310,15 @@ MonoBehaviour:
   connectedScreen: {fileID: 29507113}
   nicknameField: {fileID: 1107323942}
   errorText: {fileID: 217325687}
+  serverPrefab: {fileID: 486544343428658568, guid: b816daabfc7fbc14aad87fcfae3afc95,
+    type: 3}
+  controllerPrefab: {fileID: 2159434767320334642, guid: 676c69ac96d94054992fae72679d416a,
+    type: 3}
+  createField: {fileID: 1550876406}
+  joinField: {fileID: 1381285853}
+  welcomeText: {fileID: 926519924}
+  lobbyErrorText: {fileID: 731673467}
+  playerName: 
 --- !u!4 &1762497602
 Transform:
   m_ObjectHideFlags: 0
@@ -3331,7 +3340,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1762497600}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2ac0f9e93b31374797b62619c377a49, type: 3}
   m_Name: 
@@ -3343,6 +3352,7 @@ MonoBehaviour:
   welcomeText: {fileID: 926519924}
   levelToLoad: Level
   errorText: {fileID: 731673467}
+  playerName: 
 --- !u!1 &1795579987
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,12 +27,30 @@ MonoBehaviour:
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  DevRegion: 
+  DevRegion: sa
   PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
-  RpcList: []
+  RpcList:
+  - ActivateEndGameScreen
+  - AddPlayer
+  - ClickRpc
+  - DestroyRpc
+  - DestroySpaceship
+  - Die
+  - Fire
+  - Jump
+  - Move
+  - ResetRotation
+  - RespawnSpaceship
+  - RPCChangeColor
+  - SetPlayerName
+  - SetServer
+  - Spawn
+  - UpdateLifeBar
+  - UpdateName
+  - SetLocalParams
   DisableAutoOpenWizard: 1
   ShowSettings: 1
-  DevRegionSetOnce: 0
+  DevRegionSetOnce: 1

@@ -305,7 +305,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10.000001, y: 33.242466, z: 9.999999}
+  m_Size: {x: 91.24, y: 33.242466, z: 9.999999}
   m_Center: {x: 9.893911e-15, y: -16.621237, z: 0}
 --- !u!23 &158367987
 MeshRenderer:
@@ -430,6 +430,7 @@ MonoBehaviour:
   endScreen: {fileID: 927410868}
   endText: {fileID: 1590980144}
   levelToLoad: Menu
+  checkCharacters: 0
 --- !u!4 &459198948
 Transform:
   m_ObjectHideFlags: 0
@@ -959,8 +960,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.99999994, y: 0.99999994, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.99999994, y: 6.37, z: 18.86}
+  m_Center: {x: 0, y: -2.65, z: 0}
 --- !u!23 &1082373079
 MeshRenderer:
   m_ObjectHideFlags: 0
