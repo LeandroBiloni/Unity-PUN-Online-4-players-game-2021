@@ -93,8 +93,9 @@ public class Server : MonoBehaviourPun
 
         var pos = PhotonNetwork.PlayerList.Length - 2;
 
-        Character newCharacter = PhotonNetwork.Instantiate(characterPrefab.name, spawns.spawns[pos].position, spawns.spawns[pos].rotation).GetComponent<Character>().SetInitialParameters(player);
-        
+        Character newCharacter = PhotonNetwork.Instantiate(characterPrefab.name, spawns.spawns[pos].position, spawns.spawns[pos].rotation).GetComponent<Character>();
+        newCharacter.transform.Rotate(newCharacter.transform.up, 90.0f);
+        newCharacter.SetInitialParameters(player);
         _dicModels.Add(player, newCharacter);
 
     }

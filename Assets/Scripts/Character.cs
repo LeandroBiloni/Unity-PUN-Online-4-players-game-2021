@@ -39,6 +39,8 @@ public class Character : MonoBehaviourPun, IPunObservable
     public TextMeshPro nameText;
 
     private Player _owner;
+
+    private Quaternion _originalRotation;
     // Start is called before the first frame update
     void Start()
     {
@@ -184,7 +186,7 @@ public class Character : MonoBehaviourPun, IPunObservable
                           RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         _jumping = false;
         _grounded = true;
-        transform.rotation = Quaternion.identity;
+        transform.rotation = _originalRotation;
         if (_horizontal == 0)
             rb.velocity = Vector3.zero;
     }
@@ -254,6 +256,7 @@ public class Character : MonoBehaviourPun, IPunObservable
     public Character SetInitialParameters(Player localPlayer)
     {
         _owner = localPlayer;
+        _originalRotation = transform.rotation;
         photonView.RPC("SetLocalParams", _owner, maxHp);
         return this;
     }
