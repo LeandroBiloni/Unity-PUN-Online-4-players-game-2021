@@ -2165,7 +2165,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 48.25
+  m_fontSize: 48.3
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2474,7 +2474,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1762497603}
+      - m_Target: {fileID: 1762497601}
         m_MethodName: JoinRoom
         m_Mode: 1
         m_Arguments:
@@ -2603,7 +2603,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1762497603}
+      - m_Target: {fileID: 1762497601}
         m_MethodName: CreateRoom
         m_Mode: 1
         m_Arguments:
@@ -3033,7 +3033,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 48.25
+  m_fontSize: 48.3
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1

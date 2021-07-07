@@ -48,7 +48,7 @@ public class Character : MonoBehaviourPun, IPunObservable
 
         if (!_myView.IsMine) return;
         
-        _myView.RPC("SetPlayerName", RpcTarget.AllBuffered,PhotonNetwork.LocalPlayer.NickName);
+        //_myView.RPC("SetPlayerName", RpcTarget.AllBuffered,PhotonNetwork.LocalPlayer.NickName);
         
         _cam = Camera.main;
         _canShoot = true;
@@ -237,7 +237,7 @@ public class Character : MonoBehaviourPun, IPunObservable
         return _hp;
     }
 
-    [PunRPC]
+    //[PunRPC]
     public void SetPlayerName(string name)
     {
         _playerName = name;
@@ -245,7 +245,7 @@ public class Character : MonoBehaviourPun, IPunObservable
         {
             _myView = GetComponent<PhotonView>();
         }
-        _myView.RPC("UpdateName", RpcTarget.All);
+        _myView.RPC("UpdateName", RpcTarget.AllBuffered, _playerName);
     }
 
     public string GetPlayerName()
@@ -254,15 +254,16 @@ public class Character : MonoBehaviourPun, IPunObservable
     }
 
     [PunRPC]
-    void UpdateName()
+    void UpdateName(string name)
     {
-        nameText.text = _playerName;
+        nameText.text = name;
     }
     
     public Character SetInitialParameters(Player localPlayer)
     {
         _owner = localPlayer;
         _originalRotation = transform.rotation;
+        SetPlayerName(localPlayer.NickName);
         photonView.RPC("SetLocalParams", _owner, maxHp);
         return this;
     }
@@ -271,5 +272,6 @@ public class Character : MonoBehaviourPun, IPunObservable
     void SetLocalParams(float life)
     {
         _hp = life;
+        nameText.color = Color.white;
     }
 }
