@@ -188,7 +188,7 @@ public class Character : MonoBehaviourPun, IPunObservable
             //ActivateLoseScreen();
             _myView.RPC("Die", RpcTarget.All);
             Server.instance.PlayerLose(_owner);
-            photonView.RPC("DisconnectOwner", _owner);
+            //photonView.RPC("DisconnectOwner", _owner);
         }
     }
 
@@ -229,10 +229,10 @@ public class Character : MonoBehaviourPun, IPunObservable
         Destroy(gameObject);
     }
     
-    void ActivateLoseScreen()
-    {
-        FindObjectOfType<ScreenManager>().EndGame();
-    }
+    // void ActivateLoseScreen()
+    // {
+    //     FindObjectOfType<ScreenManager>().EndGame();
+    // }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)

@@ -27,7 +27,7 @@ MonoBehaviour:
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 5
-  DevRegion: 
+  DevRegion: sa
   PunLogging: 2
   EnableSupportLogger: 0
   RunInBackground: 1
@@ -51,6 +51,8 @@ MonoBehaviour:
   - Shoot
   - UpdateLifeBar
   - UpdateName
+  - SetDisconnectScreen
+  - SetWinScreen
   DisableAutoOpenWizard: 1
   ShowSettings: 1
-  DevRegionSetOnce: 0
+  DevRegionSetOnce: 1

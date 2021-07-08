@@ -124,15 +124,29 @@ public class Server : MonoBehaviourPun
         
         screens.WaitingScreenState(state);
     }
+    
+    [PunRPC]
+    void SetDisconnectScreen()
+    {
+        var screens = FindObjectOfType<ScreenManager>();
+        
+        screens.DisconnectScreen();
+    }
+    
+    [PunRPC]
+    void SetWinScreen()
+    {
+        var screens = FindObjectOfType<ScreenManager>();
+        
+        screens.WinScreen();
+    }
 
     public void RequestMove(Player player, Vector3 dir)
     {
         if (!_enoughPlayers)
         {
-            Debug.Log("no me muevo");
             return;
         }
-        Debug.Log("si me muevo");
         photonView.RPC("Move", _server, player, dir);
     }
 
@@ -179,11 +193,14 @@ public class Server : MonoBehaviourPun
     {
         //CAMBIAR A PANTALLA DE DERROTA
         PhotonNetwork.Destroy(_dicModels[player].gameObject);
+        photonView.RPC("SetDisconnectScreen", player);
         _dicModels.Remove(player);
 
-        if (PhotonNetwork.PlayerList.Length <= 2)
+        if (_dicModels.Count <= 2)
         {
-            //ACA HAGO EL WIN
+            //ACA
+            var winPlayer = PhotonNetwork.PlayerList[1];
+            photonView.RPC("SetWinScreen", winPlayer);
         }
     }
 }
