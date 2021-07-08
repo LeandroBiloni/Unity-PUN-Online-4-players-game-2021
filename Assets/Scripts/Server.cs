@@ -196,32 +196,38 @@ public class Server : MonoBehaviourPunCallbacks
         photonView.RPC("SetDisconnectScreen", player);
         _dicModels.Remove(player);
 
-        if (_dicModels.Count <= 2)
+        if (_dicModels.Count > 2) return;
+        
+        foreach (var p in _dicModels)
         {
-            foreach (var p in _dicModels)
+            if (p.Key != _server)
             {
-                if (p.Key != _server)
-                {
-                    photonView.RPC("SetWinScreen", p.Key); 
-                }
+                photonView.RPC("SetWinScreen", p.Key); 
             }
-            StartCoroutine(CloseServer());
         }
+        StartCoroutine(CloseServer());
     }
 
     IEnumerator CloseServer()
     {
-        
         while (true)
         {
             if (PhotonNetwork.PlayerList.Length <= 1)
             {
                 Debug.Log("server ended");
-                PhotonNetwork.LoadLevel("Menu");
-                PhotonNetwork.Disconnect();
+                photonView.RPC("Disconnect", _server);
+                
+                break;
             }
                 
             yield return new WaitForSeconds(1);
         }
+    }
+
+    [PunRPC]
+    void Disconnect()
+    {
+        PhotonNetwork.LoadLevel("Menu");
+        PhotonNetwork.Disconnect(); 
     }
 }
