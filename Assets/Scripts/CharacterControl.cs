@@ -27,7 +27,7 @@ public class CharacterControl: MonoBehaviourPun
             Server.instance.RequestShoot(_localPlayer, MousePosition());
         }
             
-        if (Input.GetKeyDown(KeyCode.W) )
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space))
         {
             Server.instance.RequestJump(_localPlayer);
         }

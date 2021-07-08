@@ -20,8 +20,8 @@ public class Character : MonoBehaviourPun, IPunObservable
     public float jumpForce;
 
     public float moveSpeed;
-    
 
+	Animator _anim;
 
     private float _horizontal;
 
@@ -45,8 +45,9 @@ public class Character : MonoBehaviourPun, IPunObservable
     void Start()
     {
         _myView = GetComponent<PhotonView>();
+		_anim = GetComponent<Animator>();
 
-        if (!_myView.IsMine) return;
+		if (!_myView.IsMine) return;
         
         //_myView.RPC("SetPlayerName", RpcTarget.AllBuffered,PhotonNetwork.LocalPlayer.NickName);
         
@@ -109,14 +110,21 @@ public class Character : MonoBehaviourPun, IPunObservable
         // else _rb.AddForce(-transform.right * moveSpeed);
         Debug.Log("me muevo en: " + dir);
         rb.AddForce(dir * moveSpeed);
+		//-------------------------------*********
+		if (dir != Vector3.zero)
+			_anim.SetBool("isMoving", true);
+		else
+			_anim.SetBool("isMoving", false);
     }
 
     [PunRPC]
     public void Jump()
     {
         if (_jumping) return;
-        
-        _jumping = true;
+		//-------------------------------*********
+		_anim.SetTrigger("Jump");
+
+		_jumping = true;
         _grounded = false;
         rb.constraints = RigidbodyConstraints.None;
         rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX |
@@ -127,8 +135,10 @@ public class Character : MonoBehaviourPun, IPunObservable
     public void Shoot(Vector3 mousePos)
     {
         if (!_canShoot) return;
-        
-        _canShoot = false;
+		//-------------------------------*********
+		_anim.SetTrigger("Attack");
+
+		_canShoot = false;
         StartCoroutine(Cooldown());
         Vector3 closest = Vector3.zero;
         for (int i = 0; i < spawnPoints.Count; i++)
@@ -166,7 +176,10 @@ public class Character : MonoBehaviourPun, IPunObservable
     
     public void Damage(int damage)
     {
-        _hp -= damage;
+		//-------------------------------*********
+		_anim.SetTrigger("Hurt");
+
+		_hp -= damage;
         _myView.RPC("UpdateLifeBar", RpcTarget.All, _hp);
         
         if (_hp <= 0)

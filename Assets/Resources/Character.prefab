@@ -1031,6 +1031,7 @@ GameObject:
   - component: {fileID: 7430175007207625573}
   - component: {fileID: 7430175007207625498}
   - component: {fileID: 7430175007207625499}
+  - component: {fileID: -5476854828025035767}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -1069,7 +1070,7 @@ Animator:
   m_GameObject: {fileID: 7430175007207625496}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 56dd4edec19a3b04195448769c085dfc, type: 3}
-  m_Controller: {fileID: 9100000, guid: 1b58d63f942126347865fbdde70e67c5, type: 2}
+  m_Controller: {fileID: 9100000, guid: 8e55e0310a517b747a3d19fff6e5001e, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1156,6 +1157,7 @@ MonoBehaviour:
   - {fileID: 7430175007207625572}
   - {fileID: 7430175007207625498}
   - {fileID: 7430175007207625499}
+  - {fileID: -5476854828025035767}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -1191,6 +1193,36 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &-5476854828025035767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7430175007207625496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 9
+    SynchronizeType: 2
+    Name: Attack
+  - Type: 9
+    SynchronizeType: 2
+    Name: Hurt
+  - Type: 9
+    SynchronizeType: 2
+    Name: Jump
+  - Type: 4
+    SynchronizeType: 2
+    Name: isMoving
+  m_SynchronizeLayers:
+  - SynchronizeType: 2
+    LayerIndex: 0
 --- !u!1 &7430245157779747284
 GameObject:
   m_ObjectHideFlags: 0
