@@ -198,9 +198,14 @@ public class Server : MonoBehaviourPun
 
         if (_dicModels.Count <= 2)
         {
-            //ACA
-            var winPlayer = PhotonNetwork.PlayerList[1];
-            photonView.RPC("SetWinScreen", winPlayer);
+            foreach (var p in _dicModels)
+            {
+                if (p.Key != _server)
+                {
+                    photonView.RPC("SetWinScreen", p.Key); 
+                }
+            }
+            
         }
     }
 }
