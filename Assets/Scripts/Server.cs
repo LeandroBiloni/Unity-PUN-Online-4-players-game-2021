@@ -214,7 +214,7 @@ public class Server : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.PlayerList.Length <= 1)
             {
-                Debug.Log("server ended");
+                
                 photonView.RPC("Disconnect", _server);
                 
                 break;
@@ -227,6 +227,7 @@ public class Server : MonoBehaviourPunCallbacks
     [PunRPC]
     void Disconnect()
     {
+        Debug.Log("server ended");
         PhotonNetwork.LoadLevel("Menu");
         PhotonNetwork.Disconnect(); 
     }
