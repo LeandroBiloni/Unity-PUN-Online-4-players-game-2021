@@ -205,7 +205,18 @@ public class Server : MonoBehaviourPun
                     photonView.RPC("SetWinScreen", p.Key); 
                 }
             }
-            
+            StartCoroutine(CloseServer());
+        }
+    }
+
+    IEnumerator CloseServer()
+    {
+        
+        while (true)
+        {
+            if (PhotonNetwork.PlayerList.Length <= 1)
+                PhotonNetwork.Disconnect();
+            yield return new WaitForSeconds(1);
         }
     }
 }
