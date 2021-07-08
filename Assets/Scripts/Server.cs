@@ -5,7 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class Server : MonoBehaviourPun
+public class Server : MonoBehaviourPunCallbacks
 {
     public static Server instance;
 
@@ -215,7 +215,12 @@ public class Server : MonoBehaviourPun
         while (true)
         {
             if (PhotonNetwork.PlayerList.Length <= 1)
+            {
+                Debug.Log("server ended");
+                PhotonNetwork.LoadLevel("Menu");
                 PhotonNetwork.Disconnect();
+            }
+                
             yield return new WaitForSeconds(1);
         }
     }
