@@ -96,6 +96,7 @@ public class Server : MonoBehaviourPunCallbacks
         newCharacter.transform.Rotate(newCharacter.transform.up, 90.0f);
         newCharacter.SetInitialParameters(player);
         _dicModels.Add(player, newCharacter); 
+        Debug.Log("dic count: " + _dicModels.Count);
         photonView.RPC("SetWaitingScreen", player, true);
 
     }
@@ -104,7 +105,7 @@ public class Server : MonoBehaviourPunCallbacks
     {
         while (!_enoughPlayers)
         {
-            _enoughPlayers = PhotonNetwork.PlayerList.Length >= 3;
+            _enoughPlayers = PhotonNetwork.PlayerList.Length >= 5;
             yield return new WaitForSecondsRealtime(1); 
         }
 
@@ -209,8 +210,8 @@ public class Server : MonoBehaviourPunCallbacks
         PhotonNetwork.Destroy(_dicModels[player].gameObject);
         photonView.RPC("SetDisconnectScreen", player);
         _dicModels.Remove(player);
-
-        if (_dicModels.Count > 2) return;
+        Debug.Log("dic count: " + _dicModels.Count);
+        if (_dicModels.Count > 1) return;
         
         foreach (var p in _dicModels)
         {
