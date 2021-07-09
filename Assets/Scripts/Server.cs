@@ -139,6 +139,13 @@ public class Server : MonoBehaviourPunCallbacks
         var screens = FindObjectOfType<ScreenManager>();
         
         screens.WinScreen();
+
+        var cc = FindObjectsOfType<CharacterControl>();
+
+        foreach (var c in cc)
+        {
+            Destroy(c.gameObject);
+        }
     }
 
     public void RequestMove(Player player, Vector3 dir)
@@ -151,12 +158,15 @@ public class Server : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void Move(Player player, Vector3 dir)
+    private void Move(Player player, Vector3 dir)
     {
+        if (player == null) return;
+        
         if (_dicModels.ContainsKey(player))
         {
             _dicModels[player].Move(dir);
         }
+
     }
     
     public void RequestJump(Player player)
@@ -166,8 +176,10 @@ public class Server : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void Jump(Player player)
+    private void Jump(Player player)
     {
+        if (player == null) return;
+        
         if (_dicModels.ContainsKey(player))
         {
             _dicModels[player].Jump();
@@ -181,8 +193,10 @@ public class Server : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void Shoot(Player player, Vector3 dir)
+    private void Shoot(Player player, Vector3 dir)
     {
+        if (player == null) return;
+        
         if (_dicModels.ContainsKey(player))
         {
             _dicModels[player].Shoot(dir);
@@ -225,7 +239,7 @@ public class Server : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void Disconnect()
+    private void Disconnect()
     {
         Debug.Log("server ended");
         PhotonNetwork.LoadLevel("Menu");

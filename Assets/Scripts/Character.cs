@@ -192,10 +192,10 @@ public class Character : MonoBehaviourPun, IPunObservable
         }
     }
 
-    void DisconnectOwner()
-    {
-        PhotonNetwork.Disconnect();
-    }
+    // void DisconnectOwner()
+    // {
+    //     PhotonNetwork.Disconnect();
+    // }
     
     [PunRPC]
     void ResetRotation()
@@ -210,11 +210,11 @@ public class Character : MonoBehaviourPun, IPunObservable
             rb.velocity = Vector3.zero;
     }
 
-    [PunRPC]
-    public void RPCChangeColor(float r, float g, float b)
-    {
-        GetComponent<MeshRenderer>().material.color = new Color(r,g,b);
-    }
+    // [PunRPC]
+    // public void RPCChangeColor(float r, float g, float b)
+    // {
+    //     GetComponent<MeshRenderer>().material.color = new Color(r,g,b);
+    // }
 
     [PunRPC]
     void UpdateLifeBar(float currenthp)
@@ -225,7 +225,6 @@ public class Character : MonoBehaviourPun, IPunObservable
     [PunRPC]
     void Die()
     {
-        Debug.Log("memo ri");
         Destroy(gameObject);
     }
     
