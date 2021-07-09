@@ -110,6 +110,23 @@ public class Character : MonoBehaviourPun, IPunObservable
         // else _rb.AddForce(-transform.right * moveSpeed);
         Debug.Log("me muevo en: " + dir);
         rb.AddForce(dir * moveSpeed);
+
+        var velocity = rb.velocity;
+        if (dir.x == 0)
+        {
+            velocity.x = 0;
+        }
+        else if (velocity.x > 10)
+        {
+            velocity.x = velocity.normalized.x * 10;
+        }
+        else if (velocity.x < -10)
+        {
+            velocity.x = velocity.normalized.x * -10;
+        }
+        
+        
+        
 		//-------------------------------*********
 		if (dir != Vector3.zero)
 			_anim.SetBool("isMoving", true);
