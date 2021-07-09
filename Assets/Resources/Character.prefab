@@ -1123,7 +1123,7 @@ MonoBehaviour:
   maxHp: 50
   hpBar: {fileID: 636996841320512178}
   rb: {fileID: 7430175007207625575}
-  jumpForce: 300
+  jumpForce: 600
   moveSpeed: 30
   spawnPoints:
   - {fileID: 636996842140407180}
