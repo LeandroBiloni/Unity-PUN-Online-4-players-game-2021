@@ -10,6 +10,7 @@ public class ScreenManager : MonoBehaviourPun
     public GameObject waitingScreen;
     public GameObject disconnectScreen;
     public GameObject winScreen;
+    public TextMeshProUGUI roomNameText;
     
     public TextMeshProUGUI endText;
     public string levelToLoad;
@@ -79,5 +80,10 @@ public class ScreenManager : MonoBehaviourPun
     public void DisconnectScreen()
     {
         disconnectScreen.SetActive(true);
+    }
+
+    public void SetRoomName(string roomName)
+    {
+        roomNameText.text = "Room name: " + roomName;
     }
 }

@@ -144,6 +144,7 @@ public class Server : MonoBehaviourPunCallbacks
         var screens = FindObjectOfType<ScreenManager>();
 
         screens.WaitingScreenState(state);
+        screens.SetRoomName(PhotonNetwork.CurrentRoom.Name);
     }
 
     [PunRPC]
