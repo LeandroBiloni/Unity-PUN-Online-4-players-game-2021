@@ -204,7 +204,7 @@ public class Character : MonoBehaviourPun, IPunObservable
             alive = false;
             //ActivateLoseScreen();
             _myView.RPC("Die", RpcTarget.All);
-            Server.instance.PlayerLose(_owner);
+            Server.Instance.PlayerLose(_owner);
             //photonView.RPC("DisconnectOwner", _owner);
         }
     }

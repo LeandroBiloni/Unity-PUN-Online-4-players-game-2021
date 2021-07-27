@@ -7,7 +7,7 @@ using Photon.Realtime;
 
 public class Server : MonoBehaviourPunCallbacks
 {
-    public static Server instance;
+    public static Server Instance;
 
     private Player _server;
 
@@ -17,7 +17,6 @@ public class Server : MonoBehaviourPunCallbacks
 
     public ChatManager chatManager;
     private Dictionary<Player, Character> _dicModels = new Dictionary<Player, Character>();
-    private Dictionary<Player, ChatManager> _dicChat = new Dictionary<Player, ChatManager>();
     private bool _enoughPlayers;
     public int PackagesPerSecond { get; private set; }
 
@@ -32,7 +31,7 @@ public class Server : MonoBehaviourPunCallbacks
         
         DontDestroyOnLoad(gameObject);
 
-        if (instance == null)
+        if (Instance == null)
         {
             if (photonView.IsMine)
             {
@@ -73,13 +72,13 @@ public class Server : MonoBehaviourPunCallbacks
     [PunRPC]
     void SetServer(Player serverPlayer, int sceneIndex = 1)
     {
-        if (instance)
+        if (Instance)
         {
             Destroy(gameObject);
             return;
         }
 
-        instance = this;
+        Instance = this;
 
         _server = serverPlayer;
 
@@ -118,7 +117,6 @@ public class Server : MonoBehaviourPunCallbacks
         _dicModels.Add(player, newCharacter);
         RequestUpdatePlayerList();
         photonView.RPC("SetWaitingScreen", player, true);
-
     }
 
     IEnumerator CheckPlayers()
@@ -274,25 +272,26 @@ public class Server : MonoBehaviourPunCallbacks
 
     public void RequestSendText(string text)
     {
-        photonView.RPC("SendText", _server, PhotonNetwork.LocalPlayer.NickName, text);
+        photonView.RPC("SendText", _server, PhotonNetwork.LocalPlayer, text);
     }
 
     [PunRPC]
-    private void SendText(string nickname, string text)
+    private void SendText(Player player, string text)
     {
+        var pos = GetPositionInPlayersList(player);
         foreach (var p in PhotonNetwork.PlayerList)
         {
-            photonView.RPC("UpdateChatBox", p, nickname, text);
+            photonView.RPC("UpdateChatBox", p, pos, player.NickName, text);
         }
     }
 
     [PunRPC]
-    private void UpdateChatBox(string nickname, string text)
+    private void UpdateChatBox(int posInPlayerList, string nickname, string text)
     {
-        chatManager.UpdateChatBox(nickname, text);
+        chatManager.UpdateChatBox(posInPlayerList, nickname, text);
     }
 
-    public void RequestUpdatePlayerList()
+    private void RequestUpdatePlayerList()
     {
         photonView.RPC("CheckPlayersList", _server);
     }
@@ -312,5 +311,18 @@ public class Server : MonoBehaviourPunCallbacks
     private void UpdatePlayersList(Player[] players)
     {
         chatManager.UpdatePlayersList(players);
+    }
+
+    private int GetPositionInPlayersList(Player player)
+    {
+        for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (PhotonNetwork.PlayerList[i] == player)
+            {
+                return i;
+            }
+        }
+
+        return 0;
     }
 }

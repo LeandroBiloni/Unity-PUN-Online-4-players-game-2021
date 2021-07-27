@@ -25,12 +25,12 @@ public class CharacterControl: MonoBehaviourPun
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Server.instance.RequestShoot(_localPlayer, MousePosition());
+            Server.Instance.RequestShoot(_localPlayer, MousePosition());
         }
             
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space))
         {
-            Server.instance.RequestJump(_localPlayer);
+            Server.Instance.RequestJump(_localPlayer);
         }
     }
 
@@ -52,9 +52,9 @@ public class CharacterControl: MonoBehaviourPun
             {
                 dir = -transform.right;
             }
-            Server.instance.RequestMove(_localPlayer, dir);
+            Server.Instance.RequestMove(_localPlayer, dir);
 
-            yield return new WaitForSeconds(1 / Server.instance.PackagesPerSecond);
+            yield return new WaitForSeconds(1 / Server.Instance.PackagesPerSecond);
         }
     }
     

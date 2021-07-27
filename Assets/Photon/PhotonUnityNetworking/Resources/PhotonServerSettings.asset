@@ -58,6 +58,7 @@ MonoBehaviour:
   - UpdatePlayersList
   - UpdateChatBox
   - CheckPlayersList
+  - SetPlayerChatColor
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

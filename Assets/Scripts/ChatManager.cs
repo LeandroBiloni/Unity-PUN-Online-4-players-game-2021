@@ -11,17 +11,22 @@ public class ChatManager : MonoBehaviour
     [SerializeField] private TMP_InputField _textBox;
     [SerializeField] private TextMeshProUGUI _chatBox;
     [SerializeField] private TextMeshProUGUI _playersList;
-    public void UpdateChatBox(string nickname, string text)
+    [SerializeField] private List<Color> _colorsList = new List<Color>();
+    public void UpdateChatBox(int pos, string nickname, string text)
     {
-        _chatBox.text += "\n" + nickname + ": " + text;
+        var color = ColorUtility.ToHtmlStringRGB(_colorsList[pos]);
+        _chatBox.text += "\n" + "<b><color=#"+color+">" + nickname + "</color></b>" + ": " + text;
     }
 
     public void UpdatePlayersList(Player[] players)
     {
         _playersList.text = "";
+        int count = 0;
         foreach (var p in players)
         {
-            _playersList.text += p.NickName + "\n";
+            var color = ColorUtility.ToHtmlStringRGB(_colorsList[count]);
+            _playersList.text += "<b><color=#"+color+">" + p.NickName + "</color></b>" + "\n";
+            count++;
         }
     }
 
@@ -32,7 +37,7 @@ public class ChatManager : MonoBehaviour
 
     public void SendTextToServer()
     {
-        Server.instance.RequestSendText(_textBox.text);
+        Server.Instance.RequestSendText(_textBox.text);
         _textBox.text = "";
     }
 }
