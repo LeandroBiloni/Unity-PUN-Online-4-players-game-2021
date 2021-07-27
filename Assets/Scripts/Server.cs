@@ -274,22 +274,22 @@ public class Server : MonoBehaviourPunCallbacks
 
     public void RequestSendText(string text)
     {
-        photonView.RPC("SendText", _server, PhotonNetwork.LocalPlayer, text);
+        photonView.RPC("SendText", _server, PhotonNetwork.LocalPlayer.NickName, text);
     }
 
     [PunRPC]
-    private void SendText(Player player, string text)
+    private void SendText(string nickname, string text)
     {
         foreach (var p in PhotonNetwork.PlayerList)
         {
-            photonView.RPC("UpdateChatBox", p, player, text);
+            photonView.RPC("UpdateChatBox", p, nickname, text);
         }
     }
 
     [PunRPC]
-    private void UpdateChatBox(Player player, string text)
+    private void UpdateChatBox(string nickname, string text)
     {
-        chatManager.UpdateChatBox(player.NickName, text);
+        chatManager.UpdateChatBox(nickname, text);
     }
 
     public void RequestUpdatePlayerList()
@@ -300,24 +300,17 @@ public class Server : MonoBehaviourPunCallbacks
     [PunRPC]
     private void CheckPlayersList()
     {
-        string[] names = new string[PhotonNetwork.PlayerList.Length - 1];
-
         Player[] players = PhotonNetwork.PlayerList;
-
-        for (int i = 1; i < players.Length; i++)
-        {
-            names[i - 1] = players[i].NickName;
-        }
 
         foreach (var p in PhotonNetwork.PlayerList)
         {
-            photonView.RPC("UpdateChatBox", p, names);
+            photonView.RPC("UpdatePlayersList", p, players);
         }
     }
     
     [PunRPC]
-    private void UpdatePlayersList(string[] names)
+    private void UpdatePlayersList(Player[] players)
     {
-        chatManager.UpdatePlayersList(names);
+        chatManager.UpdatePlayersList(players);
     }
 }

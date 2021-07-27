@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class ChatManager : MonoBehaviour
 {
@@ -14,12 +16,12 @@ public class ChatManager : MonoBehaviour
         _chatBox.text += "\n" + nickname + ": " + text;
     }
 
-    public void UpdatePlayersList(string[] players)
+    public void UpdatePlayersList(Player[] players)
     {
         _playersList.text = "";
         foreach (var p in players)
         {
-            _playersList.text += p + "\n";
+            _playersList.text += p.NickName + "\n";
         }
     }
 
@@ -31,5 +33,6 @@ public class ChatManager : MonoBehaviour
     public void SendTextToServer()
     {
         Server.instance.RequestSendText(_textBox.text);
+        _textBox.text = "";
     }
 }
