@@ -54,6 +54,10 @@ MonoBehaviour:
   - SetDisconnectScreen
   - SetWinScreen
   - Disconnect
+  - SendText
+  - UpdatePlayersList
+  - UpdateChatBox
+  - CheckPlayersList
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

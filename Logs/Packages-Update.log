@@ -45,3 +45,11 @@ The following packages were added:
   com.unity.modules.vr@1.0.0
   com.unity.modules.wind@1.0.0
   com.unity.modules.xr@1.0.0
+
+=== Mon Jul 26 16:27:58 2021
+
+Packages were changed.
+Update Mode: resetToDefaultDependencies
+
+The following packages were added:
+  com.unity.ugui@1.0.0

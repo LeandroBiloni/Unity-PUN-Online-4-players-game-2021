@@ -47,6 +47,7 @@ MonoBehaviour:
   characterPrefab: {fileID: 7430175007207625572, guid: e76aa34730e752b41b48de585f2f7898,
     type: 3}
   spawns: {fileID: 0}
+  chatManager: {fileID: 0}
 --- !u!114 &446755771898464300
 MonoBehaviour:
   m_ObjectHideFlags: 0

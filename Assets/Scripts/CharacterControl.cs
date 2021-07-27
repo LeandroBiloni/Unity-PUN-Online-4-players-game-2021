@@ -9,6 +9,7 @@ public class CharacterControl: MonoBehaviourPun
 {
     private Camera _cam;
     private Player _localPlayer;
+    private ChatManager _chatManager;
     private void Start()
     {
         if (!photonView.IsMine) return;

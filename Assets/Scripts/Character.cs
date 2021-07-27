@@ -102,7 +102,7 @@ public class Character : MonoBehaviourPun, IPunObservable
         return _cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, (_cam.transform.position - transform.position).magnitude));
     }
     
-    [PunRPC]
+    //[PunRPC]
     public void Move(Vector3 dir)
     {
         // if (_horizontal > 0)
@@ -134,7 +134,7 @@ public class Character : MonoBehaviourPun, IPunObservable
 			_anim.SetBool("isMoving", false);
     }
 
-    [PunRPC]
+    //[PunRPC]
     public void Jump()
     {
         if (_jumping) return;
@@ -214,7 +214,7 @@ public class Character : MonoBehaviourPun, IPunObservable
     //     PhotonNetwork.Disconnect();
     // }
     
-    [PunRPC]
+    //[PunRPC]
     void ResetRotation()
     {
         rb.constraints = RigidbodyConstraints.None;
@@ -233,13 +233,13 @@ public class Character : MonoBehaviourPun, IPunObservable
     //     GetComponent<MeshRenderer>().material.color = new Color(r,g,b);
     // }
 
-    [PunRPC]
+    //[PunRPC]
     void UpdateLifeBar(float currenthp)
     {
         hpBar.fillAmount = currenthp / maxHp;
     }
 
-    [PunRPC]
+    //[PunRPC]
     void Die()
     {
         Destroy(gameObject);
