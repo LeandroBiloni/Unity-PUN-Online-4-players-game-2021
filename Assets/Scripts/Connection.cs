@@ -91,7 +91,6 @@ public class Connection : MonoBehaviourPunCallbacks
     
     public override void OnDisconnected(DisconnectCause cause)
     {
-        Debug.Log("Connection failed: " + cause);
         connectedScreen.SetActive(false);
         mainScreen.SetActive(true);
     }

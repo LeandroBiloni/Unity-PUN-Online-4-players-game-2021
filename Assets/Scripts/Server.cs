@@ -47,6 +47,7 @@ public class Server : MonoBehaviourPunCallbacks
         }
     }
 
+    //Corrutina por si tarda en cargarse el spawn y no lo encuentra en el primer find
     IEnumerator SearchSpawns()
     {
         while (!spawns)
@@ -58,6 +59,7 @@ public class Server : MonoBehaviourPunCallbacks
         Debug.Log("consegui spawn");
     }
 
+    //Corrutina por si tarda en cargarse el chat manager y no lo encuentra en el primer find
     IEnumerator SearchChat()
     {
         while (!chatManager)
@@ -119,6 +121,7 @@ public class Server : MonoBehaviourPunCallbacks
         photonView.RPC("SetWaitingScreen", player, true);
     }
 
+    //Checkeo de los jugadores en el room para ver cuando empezar la partida
     IEnumerator CheckPlayers()
     {
         while (!_enoughPlayers)
@@ -135,7 +138,8 @@ public class Server : MonoBehaviourPunCallbacks
 
         Debug.Log("enough players: " + _enoughPlayers);
     }
-
+    
+    //Pantalla del lobby
     [PunRPC]
     void SetWaitingScreen(bool state)
     {
@@ -147,6 +151,7 @@ public class Server : MonoBehaviourPunCallbacks
         screens.SetRoomName(PhotonNetwork.CurrentRoom.Name);
     }
 
+    //Pantalla de derrota
     [PunRPC]
     void SetDisconnectScreen()
     {
@@ -154,7 +159,8 @@ public class Server : MonoBehaviourPunCallbacks
 
         screens.DisconnectScreen();
     }
-
+    
+    //Pantalla de victoria
     [PunRPC]
     void SetWinScreen()
     {
@@ -226,13 +232,14 @@ public class Server : MonoBehaviourPunCallbacks
         }
     }
 
+    //Se ejecuta cuando un jugador pierde
     public void PlayerLose(Player player)
     {
-        //CAMBIAR A PANTALLA DE DERROTA
         PhotonNetwork.Destroy(_dicModels[player].gameObject);
         photonView.RPC("SetDisconnectScreen", player);
         _dicModels.Remove(player);
-        Debug.Log("dic count: " + _dicModels.Count);
+        
+        //Si queda 1 en el diccionario se activa en ese jugador la pantalla de victoria
         if (_dicModels.Count > 1) return;
 
         foreach (var p in _dicModels)
@@ -262,6 +269,7 @@ public class Server : MonoBehaviourPunCallbacks
         }
     }
 
+    //Desconección del jugador que sale del lobby
     [PunRPC]
     private void Disconnect()
     {
@@ -269,16 +277,18 @@ public class Server : MonoBehaviourPunCallbacks
         PhotonNetwork.Disconnect();
         PhotonNetwork.LoadLevel("Menu");
     }
-
-
+    
+    //Pedido del local player para enviar un mensaje al chat
     public void RequestSendText(string text)
     {
         photonView.RPC("SendText", _server, PhotonNetwork.LocalPlayer, text);
     }
 
+    //Envía el mensaje a a todos los player
     [PunRPC]
     private void SendText(Player player, string text)
     {
+        //la posición es para asignarle el color en el chat
         var pos = GetPositionInPlayersList(player);
         foreach (var p in PhotonNetwork.PlayerList)
         {
@@ -286,17 +296,20 @@ public class Server : MonoBehaviourPunCallbacks
         }
     }
 
+    //Actualiza la ventana de chat con los nuevos mensajes
     [PunRPC]
     private void UpdateChatBox(int posInPlayerList, string nickname, string text)
     {
         chatManager.UpdateChatBox(posInPlayerList, nickname, text);
     }
 
+    //Pedido al server para actualizar la lista de players en la sala
     private void RequestUpdatePlayerList()
     {
         photonView.RPC("CheckPlayersList", _server);
     }
 
+    //Envía la actualización de la lista de players a todos los players
     [PunRPC]
     private void CheckPlayersList()
     {
@@ -309,12 +322,14 @@ public class Server : MonoBehaviourPunCallbacks
         }
     }
     
+    //Actualización de la lista de players
     [PunRPC]
     private void UpdatePlayersList(Player[] players)
     {
         chatManager.UpdatePlayersList(players);
     }
 
+    //Utilidad para poder asignar el color del player en el chat
     private int GetPositionInPlayersList(Player player)
     {
         for (int i = 1; i < PhotonNetwork.PlayerList.Length; i++)
@@ -328,33 +343,35 @@ public class Server : MonoBehaviourPunCallbacks
         return 0;
     }
 
+    //Lo ejecuta el local player cuando sale de la sala, pide al server original que remueva al player
     public void PlayerLeavesRoom(Player player)
     {
-        Debug.Log("llamo al rpc en el server local");
         photonView.RPC("RemoveAndDisconnectPlayer", _server, player);
     }
 
+    //Lo ejecuta el server original, remuevo y desconecto al player de la sala
     [PunRPC]
     public void RemoveAndDisconnectPlayer(Player player)
     {
-        if (player == null)
-        {
-            Debug.Log("server orig player es null");
-            return;
-        }
+        if (player == null) return;
 
-        Debug.Log("ejecuto el rpc en el server orig");
-        if (player != null && _dicModels.ContainsKey(player))
-        {
-            PhotonNetwork.Destroy(_dicModels[player].gameObject);
-            //PhotonNetwork.DestroyPlayerObjects(player);
-            Debug.Log("destruyo go player");
-            _dicModels.Remove(player);
-            photonView.RPC("Disconnect", player);
-            StartCoroutine(UpdatePlayerListWithTimer());
-        }
+        if (!_dicModels.ContainsKey(player)) return;
+        
+        //Destruyo el character del player que se desconecto
+        PhotonNetwork.Destroy(_dicModels[player].gameObject);
+        //PhotonNetwork.DestroyPlayerObjects(player);
+        
+        //Remuevo el player que se desconecto del diccionario
+        _dicModels.Remove(player);
+        
+        //Lo desconecto y lo mando a la pantalla principal
+        photonView.RPC("Disconnect", player);
+        
+        //Actualizo la lista de players
+        //Corrutina para darle tiempo a que se desconecte por completo el player y desaparezca de PhotonNetwork.PlayerList
+        StartCoroutine(UpdatePlayerListWithTimer());
     }
-
+    
     IEnumerator UpdatePlayerListWithTimer()
     {
         yield return new WaitForSeconds(2);
