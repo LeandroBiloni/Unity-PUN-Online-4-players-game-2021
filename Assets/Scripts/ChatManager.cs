@@ -24,6 +24,8 @@ public class ChatManager : MonoBehaviour
         int count = 0;
         foreach (var p in players)
         {
+            if (count > 4) break;
+            
             var color = ColorUtility.ToHtmlStringRGB(_colorsList[count]);
             _playersList.text += "<b><color=#"+color+">" + p.NickName + "</color></b>" + "\n";
             count++;

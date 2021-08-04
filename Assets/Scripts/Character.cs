@@ -233,7 +233,7 @@ public class Character : MonoBehaviourPun, IPunObservable
     //     GetComponent<MeshRenderer>().material.color = new Color(r,g,b);
     // }
 
-    //[PunRPC]
+    [PunRPC]
     void UpdateLifeBar(float currenthp)
     {
         hpBar.fillAmount = currenthp / maxHp;
