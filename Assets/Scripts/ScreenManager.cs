@@ -5,7 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using TMPro;
-public class ScreenManager : MonoBehaviourPun
+public class ScreenManager : MonoBehaviourPunCallbacks
 {
     public GameObject waitingScreen;
     public GameObject disconnectScreen;
@@ -15,15 +15,12 @@ public class ScreenManager : MonoBehaviourPun
     public TextMeshProUGUI endText;
     public string levelToLoad;
 
-    private PhotonView _myView;
+    //private PhotonView _myView;
 
-    public bool checkCharacters;
+    //public bool checkCharacters;
+
+    private Player _player;
     // Start is called before the first frame update
-    void Start()
-    {
-        _myView = GetComponent<PhotonView>();
-        checkCharacters = false;
-    }
 
     private void Update()
     {
@@ -63,8 +60,10 @@ public class ScreenManager : MonoBehaviourPun
 
     public void Disconnect()
     {
-        PhotonNetwork.Disconnect();
-        PhotonNetwork.LoadLevel(levelToLoad);
+        Debug.Log("salgo del lobby");
+        Server.Instance.PlayerLeavesRoom(PhotonNetwork.LocalPlayer);
+        //PhotonNetwork.Disconnect();
+        // StartCoroutine(LoadLevelWithTimer(3f));
     }
 
     public void WaitingScreenState(bool state)
@@ -85,5 +84,16 @@ public class ScreenManager : MonoBehaviourPun
     public void SetRoomName(string roomName)
     {
         roomNameText.text = "Room name: " + roomName;
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        
+    }
+
+    IEnumerator LoadLevelWithTimer(float time)
+    {
+        yield return new WaitForSeconds(time);
+        PhotonNetwork.LoadLevel(levelToLoad);
     }
 }

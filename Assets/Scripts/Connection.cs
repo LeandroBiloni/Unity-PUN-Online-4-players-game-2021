@@ -49,7 +49,7 @@ public class Connection : MonoBehaviourPunCallbacks
             RoomOptions options = new RoomOptions();
 
             options.MaxPlayers = 5;
-        
+
             PhotonNetwork.JoinOrCreateRoom(createField.text, options,TypedLobby.Default);
         }
     }
@@ -60,7 +60,10 @@ public class Connection : MonoBehaviourPunCallbacks
         {
             SetLobbyScreenError("Failed to join room. \nPlease introduce a room name.");
         }
-        else PhotonNetwork.JoinRoom(joinField.text);
+        else
+        {
+            PhotonNetwork.JoinRoom(joinField.text);
+        }
     }
 
     public override void OnCreatedRoom()

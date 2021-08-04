@@ -265,9 +265,9 @@ public class Server : MonoBehaviourPunCallbacks
     [PunRPC]
     private void Disconnect()
     {
-        Debug.Log("server ended");
-        PhotonNetwork.LoadLevel("Menu");
+        //PhotonNetwork.LeaveRoom();
         PhotonNetwork.Disconnect();
+        PhotonNetwork.LoadLevel("Menu");
     }
 
 
@@ -300,6 +300,7 @@ public class Server : MonoBehaviourPunCallbacks
     [PunRPC]
     private void CheckPlayersList()
     {
+        Debug.Log("check player server orig");
         Player[] players = PhotonNetwork.PlayerList;
 
         foreach (var p in PhotonNetwork.PlayerList)
@@ -325,5 +326,39 @@ public class Server : MonoBehaviourPunCallbacks
         }
 
         return 0;
+    }
+
+    public void PlayerLeavesRoom(Player player)
+    {
+        Debug.Log("llamo al rpc en el server local");
+        photonView.RPC("RemoveAndDisconnectPlayer", _server, player);
+    }
+
+    [PunRPC]
+    public void RemoveAndDisconnectPlayer(Player player)
+    {
+        if (player == null)
+        {
+            Debug.Log("server orig player es null");
+            return;
+        }
+
+        Debug.Log("ejecuto el rpc en el server orig");
+        if (player != null && _dicModels.ContainsKey(player))
+        {
+            PhotonNetwork.Destroy(_dicModels[player].gameObject);
+            //PhotonNetwork.DestroyPlayerObjects(player);
+            Debug.Log("destruyo go player");
+            _dicModels.Remove(player);
+            photonView.RPC("Disconnect", player);
+            StartCoroutine(UpdatePlayerListWithTimer());
+        }
+    }
+
+    IEnumerator UpdatePlayerListWithTimer()
+    {
+        yield return new WaitForSeconds(2);
+        if (PhotonNetwork.PlayerList.Length > 1)
+            RequestUpdatePlayerList();
     }
 }
