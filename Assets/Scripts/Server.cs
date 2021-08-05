@@ -232,8 +232,28 @@ public class Server : MonoBehaviourPunCallbacks
         }
     }
 
-    //Se ejecuta cuando un jugador pierde
-    public void PlayerLose(Player player)
+	public void RequestDamage(Player player, int damage)
+	{
+		if (!_enoughPlayers) return;
+		photonView.RPC("Damage", _server, player, damage);
+	}
+
+	[PunRPC]
+	private void Damage(Player player, int damage)
+	{
+		if (player == null) return;
+		if (_dicModels.ContainsKey(player))
+		{
+			var myPlayer = _dicModels[player];
+			myPlayer.Damage(damage);
+			var playerHP = myPlayer.GetHP();
+			myPlayer.UpdateLifeBar(playerHP);
+		}
+	}
+
+
+	//Se ejecuta cuando un jugador pierde
+	public void PlayerLose(Player player)
     {
         PhotonNetwork.Destroy(_dicModels[player].gameObject);
         photonView.RPC("SetDisconnectScreen", player);

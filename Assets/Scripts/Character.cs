@@ -197,13 +197,13 @@ public class Character : MonoBehaviourPun, IPunObservable
 		_anim.SetTrigger("Hurt");
 
 		_hp -= damage;
-        _myView.RPC("UpdateLifeBar", RpcTarget.All, _hp);
+        //_myView.RPC("UpdateLifeBar", RpcTarget.All, _hp);
         
         if (_hp <= 0)
         {
             alive = false;
             //ActivateLoseScreen();
-            _myView.RPC("Die", RpcTarget.All);
+           // _myView.RPC("Die", RpcTarget.All);
             Server.Instance.PlayerLose(_owner);
             //photonView.RPC("DisconnectOwner", _owner);
         }
@@ -233,8 +233,8 @@ public class Character : MonoBehaviourPun, IPunObservable
     //     GetComponent<MeshRenderer>().material.color = new Color(r,g,b);
     // }
 
-    [PunRPC]
-    void UpdateLifeBar(float currenthp)
+    //[PunRPC]
+    public void UpdateLifeBar(float currenthp)
     {
         hpBar.fillAmount = currenthp / maxHp;
     }
@@ -296,6 +296,11 @@ public class Character : MonoBehaviourPun, IPunObservable
         photonView.RPC("SetLocalParams", _owner, maxHp);
         return this;
     }
+
+	public Player GetCharacterAsPlayer()
+	{
+		return _owner;
+	} 
 
     [PunRPC]
     void SetLocalParams(float life)

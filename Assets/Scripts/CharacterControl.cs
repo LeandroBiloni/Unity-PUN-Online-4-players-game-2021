@@ -32,7 +32,8 @@ public class CharacterControl: MonoBehaviourPun
         {
             Server.Instance.RequestJump(_localPlayer);
         }
-    }
+
+	}
 
     IEnumerator SendPackages()
     {

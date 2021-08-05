@@ -31,8 +31,10 @@ public class Projectile : MonoBehaviourPun
             Debug.Log("hit char");
             var contactPoint = other.collider.ClosestPoint(transform.position);
             var dirToPush = (contactPoint - transform.position).normalized;
-            character.Damage(damage);
-            character.Push(dirToPush, force, contactPoint);
+			//character.Damage(damage);
+			Server.Instance.RequestDamage(character.GetCharacterAsPlayer(), damage);
+
+			character.Push(dirToPush, force, contactPoint);
         }
         PhotonNetwork.Destroy(gameObject);
     }
