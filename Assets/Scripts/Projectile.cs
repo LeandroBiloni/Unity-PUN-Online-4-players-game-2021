@@ -21,29 +21,20 @@ public class Projectile : MonoBehaviourPun
 
     private void OnCollisionEnter(Collision other)
     {
-        Debug.Log("hit something");
         if (!photonView.IsMine) return;
         
-        Debug.Log("view is mine");
         var character = other.gameObject.GetComponent<Character>();
         if (character != null && character != _owner)
         {
-            Debug.Log("hit char");
             var contactPoint = other.collider.ClosestPoint(transform.position);
             var dirToPush = (contactPoint - transform.position).normalized;
-			//character.Damage(damage);
-			Server.Instance.RequestDamage(character.GetCharacterAsPlayer(), damage);
+            
+            Server.Instance.RequestDamage(character.GetCharacterAsPlayer(), damage);
 
 			character.Push(dirToPush, force, contactPoint);
         }
         PhotonNetwork.Destroy(gameObject);
     }
-
-    // [PunRPC]
-    // void Die()
-    // {
-    //     Destroy(gameObject);
-    // }
 
     public Projectile SetDir(Vector3 dir)
     {

@@ -247,9 +247,42 @@ public class Server : MonoBehaviourPunCallbacks
 			var myPlayer = _dicModels[player];
 			myPlayer.Damage(damage);
 			var playerHP = myPlayer.GetHP();
-			myPlayer.UpdateLifeBar(playerHP);
+            foreach (var p in _dicModels)
+            {
+                photonView.RPC("UpdateLifeBar", p.Key, myPlayer.photonView.ViewID, playerHP);
+            }
 		}
 	}
+
+    [PunRPC]
+    //Uso el viewID porque no puedo pasar el character, así se a cual cambiarle la vida
+    void UpdateLifeBar(int photonViewID, float playerHP)
+    {
+        var characters = FindObjectsOfType<Character>();
+        foreach (var c in characters)
+        {
+            if (c.photonView.ViewID == photonViewID)
+                c.UpdateLifeBar(playerHP);
+        }
+    }
+
+    public void SetPlayerName(int photonViewID, string name)
+    {
+        photonView.RPC("SetPlayerNameBuffered", RpcTarget.AllBuffered, photonViewID, name);
+    }
+
+    [PunRPC]
+    //Uso el viewID porque no puedo pasar el character, así se a cual cambiarle el nombre
+    void SetPlayerNameBuffered(int photonViewID, string name)
+    {
+        var characters = FindObjectsOfType<Character>();
+        
+        foreach (var c in characters)
+        {
+            if (c.photonView.ViewID == photonViewID)
+                c.UpdateName(name);
+        }
+    }
 
 
 	//Se ejecuta cuando un jugador pierde

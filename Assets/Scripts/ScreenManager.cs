@@ -21,8 +21,6 @@ public class ScreenManager : MonoBehaviourPunCallbacks
     public void Disconnect()
     {
         Server.Instance.PlayerLeavesRoom(PhotonNetwork.LocalPlayer);
-        //PhotonNetwork.Disconnect();
-        // StartCoroutine(LoadLevelWithTimer(3f));
     }
 
     public void WaitingScreenState(bool state)
@@ -43,11 +41,5 @@ public class ScreenManager : MonoBehaviourPunCallbacks
     public void SetRoomName(string roomName)
     {
         roomNameText.text = "Room name: " + roomName;
-    }
-
-    IEnumerator LoadLevelWithTimer(float time)
-    {
-        yield return new WaitForSeconds(time);
-        PhotonNetwork.LoadLevel(levelToLoad);
     }
 }

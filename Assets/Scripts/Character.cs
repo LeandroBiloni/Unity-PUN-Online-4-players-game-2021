@@ -26,21 +26,20 @@ public class Character : MonoBehaviourPun, IPunObservable
     private float _horizontal;
 
     public List<Transform> spawnPoints = new List<Transform>();
-    public Projectile projectile;
+    
     public float cooldown;
     
     private bool _jumping;
     private bool _grounded;
     private  bool _canShoot;
     private bool _canMove;
-    public bool alive = true;
-    private Camera _cam;
 
     public TextMeshPro nameText;
 
     private Player _owner;
 
     private Quaternion _originalRotation;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -48,45 +47,9 @@ public class Character : MonoBehaviourPun, IPunObservable
 		_anim = GetComponent<Animator>();
 
 		if (!_myView.IsMine) return;
-        
-        //_myView.RPC("SetPlayerName", RpcTarget.AllBuffered,PhotonNetwork.LocalPlayer.NickName);
-        
-        _cam = Camera.main;
         _canShoot = true;
         _canMove = true;
         _hp = maxHp;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        // if (!_myView.IsMine) return;
-        //
-        // if (Input.GetMouseButtonDown(0))
-        // {
-        //     if (_canShoot)
-        //     {
-        //         _canShoot = false;
-        //         Shoot(MousePosition());
-        //         StartCoroutine(Cooldown());
-        //     }
-        // }
-        //
-        // if (_canMove)
-        // {
-        //     
-        //     // _horizontal = Input.GetAxis("Horizontal");
-        //     // if (_horizontal != 0)
-        //     // {
-        //     //     Move();
-        //     // }
-        //
-        // }
-        //
-        // if (Input.GetKeyDown(KeyCode.W) && _jumping == false)
-        // {
-        //     Jump();
-        // }
     }
 
     private void OnCollisionEnter(Collision other)
@@ -97,19 +60,9 @@ public class Character : MonoBehaviourPun, IPunObservable
         }
     }
 
-    Vector3 MousePosition()
-    {
-        return _cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, (_cam.transform.position - transform.position).magnitude));
-    }
-    
-    //[PunRPC]
     public void Move(Vector3 dir)
     {
-        // if (_horizontal > 0)
-        //     _rb.AddForce(transform.right * moveSpeed);
-        // else _rb.AddForce(-transform.right * moveSpeed);
-        Debug.Log("me muevo en: " + dir);
-        rb.AddForce(dir * moveSpeed);
+        rb.AddForce(dir.normalized * moveSpeed);
 
         var velocity = rb.velocity;
         if (dir.x == 0)
@@ -118,14 +71,12 @@ public class Character : MonoBehaviourPun, IPunObservable
         }
         else if (velocity.x > 10)
         {
-            velocity.x = velocity.normalized.x * 10;
+            velocity.x = moveSpeed;
         }
         else if (velocity.x < -10)
         {
-            velocity.x = velocity.normalized.x * -10;
+            velocity.x = -moveSpeed;
         }
-        
-        
         
 		//-------------------------------*********
 		if (dir != Vector3.zero)
@@ -133,8 +84,7 @@ public class Character : MonoBehaviourPun, IPunObservable
 		else
 			_anim.SetBool("isMoving", false);
     }
-
-    //[PunRPC]
+    
     public void Jump()
     {
         if (_jumping) return;
@@ -197,24 +147,12 @@ public class Character : MonoBehaviourPun, IPunObservable
 		_anim.SetTrigger("Hurt");
 
 		_hp -= damage;
-        //_myView.RPC("UpdateLifeBar", RpcTarget.All, _hp);
-        
-        if (_hp <= 0)
-        {
-            alive = false;
-            //ActivateLoseScreen();
-           // _myView.RPC("Die", RpcTarget.All);
-            Server.Instance.PlayerLose(_owner);
-            //photonView.RPC("DisconnectOwner", _owner);
-        }
-    }
 
-    // void DisconnectOwner()
-    // {
-    //     PhotonNetwork.Disconnect();
-    // }
+        if (!(_hp <= 0)) return;
+        
+        Server.Instance.PlayerLose(_owner);
+    }
     
-    //[PunRPC]
     void ResetRotation()
     {
         rb.constraints = RigidbodyConstraints.None;
@@ -226,29 +164,11 @@ public class Character : MonoBehaviourPun, IPunObservable
         if (_horizontal == 0)
             rb.velocity = Vector3.zero;
     }
-
-    // [PunRPC]
-    // public void RPCChangeColor(float r, float g, float b)
-    // {
-    //     GetComponent<MeshRenderer>().material.color = new Color(r,g,b);
-    // }
-
-    //[PunRPC]
-    public void UpdateLifeBar(float currenthp)
+    public void UpdateLifeBar(float currentHP)
     {
-        hpBar.fillAmount = currenthp / maxHp;
+        hpBar.fillAmount = currentHP / maxHp;
     }
 
-    //[PunRPC]
-    void Die()
-    {
-        Destroy(gameObject);
-    }
-    
-    // void ActivateLoseScreen()
-    // {
-    //     FindObjectOfType<ScreenManager>().EndGame();
-    // }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -266,24 +186,18 @@ public class Character : MonoBehaviourPun, IPunObservable
         return _hp;
     }
 
-    //[PunRPC]
-    public void SetPlayerName(string name)
+    private void SetPlayerName(string name)
     {
         _playerName = name;
         if (_myView == null)
         {
             _myView = GetComponent<PhotonView>();
         }
-        _myView.RPC("UpdateName", RpcTarget.AllBuffered, _playerName);
+
+        Server.Instance.SetPlayerName(_myView.ViewID, _playerName);
     }
 
-    public string GetPlayerName()
-    {
-        return _playerName;
-    }
-
-    [PunRPC]
-    void UpdateName(string name)
+    public void UpdateName(string name)
     {
         nameText.text = name;
     }
