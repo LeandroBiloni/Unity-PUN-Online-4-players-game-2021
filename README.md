@@ -1,5 +1,5 @@
 # Unity-Photon-Online-Test-Game-2021
-Simple Online game made with Unity and Photon for Develompent for Networks assignment.
+Online game made with Unity and Photon for Develompent for Networks assignment.
 Small project made to learn development for network games.
 
 The game objective is to defeat all the enemy players to win.
